@@ -176,8 +176,8 @@ module.exports.editProfile = async function (req, res) {
 module.exports.editItem = async function (req, res) {
   
     try {
-      let inventory = await Inventory.findById("61a1d125bdcc08d4195aa893");
-
+      let inventory = await Inventory.findOne({itemname:req.body.itemname});
+      console.log(inventory);
       inventory.quantity = req.body.quantity;
       
       
@@ -277,7 +277,7 @@ module.exports.createJob = async function (req, res) {
     return res.json(200, {
       data: {
         job: job,
-        //token: jwt.sign(user.toJSON(), env.jwt_secret, { expiresIn: "100000" })
+        // token: jwt.sign(user.toJSON(), env.jwt_secret, { expiresIn: "100000" })
       },
       message: "Job Created!!",
       success: true,
@@ -323,7 +323,8 @@ module.exports.createMenu = async function (req, res) {
 
 module.exports.index = async function (req, res) {
   let jobs = await Inventory.find({}).sort("-createdAt");
-
+  console.log("jobs");
+  console.log(jobs);
   //Whenever we want to send back JSON data
 
   return res.json(200, {
@@ -349,7 +350,8 @@ module.exports.fetchMenu = async function (req, res) {
   let menu = await Menu.find({}).sort("-createdAt");
 
   //Whenever we want to send back JSON data
-
+  console.log("fetchMenu");
+  console.log(menu);
   return res.json(200, {
     message: "List of Menus",
 

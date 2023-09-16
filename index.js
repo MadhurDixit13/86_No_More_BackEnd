@@ -1,5 +1,7 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
+const cors = require('cors');
+
 const app = express();
 const port = 8000;
 
@@ -17,6 +19,7 @@ const passportLocal = require('./config/passport-local-strategy');
 
 const passportJWT = require('./config/passport-jwt-strategy');
 
+app.use(cors());
 
 app.use(express.urlencoded());
 
