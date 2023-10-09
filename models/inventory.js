@@ -10,8 +10,9 @@ const inventorySchema = new mongoose.Schema({
     required: true,
   },
   restid:{
-    type: String,
+    type: mongoose.Types.ObjectId,
     required: true,
+    ref: 'User'
   },
   quantity: {
     type: Number,
@@ -22,11 +23,11 @@ const inventorySchema = new mongoose.Schema({
     required: true,
   },
   datebought: {
-    type: String,
+    type: Date,
     required: true,
   },
   dateexpired: {
-    type: String,
+    type: Date,
     required: true,
   }
 });
