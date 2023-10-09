@@ -90,18 +90,9 @@ module.exports.signUp = async function (req, res) {
 
     let user = await User.findOne({ email: req.body.email });
     if (user) {
-      return res.json(200, {
-        message: "Sign Up Successful, here is your token, plz keep it safe",
-
-        data: {
-          //user.JSON() part gets encrypted
-
-          token: jwt.sign(user.toJSON(), "caloriesapp", {
-            expiresIn: "100000",
-          }),
-          user,
-        },
-        success: true,
+      return res.json(401, {
+        message: "User already exists",
+        success: false,
       });
     }
     if (!user) {
