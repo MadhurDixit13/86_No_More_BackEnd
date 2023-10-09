@@ -1,5 +1,6 @@
 const User = require("../../../models/user");
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
 const Food = require("../../../models/food");
 const History = require('../../../models/history');
 const Job = require('../../../models/job');
@@ -10,10 +11,18 @@ const Menu = require("../../../models/menu");
 
 
 module.exports.createSession = async function (req, res) {
+  
   try {
     let user = await User.findOne({ email: req.body.email });
 
-    if (!user || user.password != req.body.password) {
+    if (!user) {
+      return res.json(422, {
+        message: "Invalid username or password",
+      });
+    }
+
+    let isValidPassword = await bcrypt.compare(req.body.password, user.password);
+    if (!isValidPassword){
       return res.json(422, {
         message: "Invalid username or password",
       });
@@ -79,8 +88,36 @@ module.exports.signUp = async function (req, res) {
       });
     }
 
-    User.findOne({ email: req.body.email }, function (err, user) {
-      if (user) {
+    let user = await User.findOne({ email: req.body.email });
+    if (user) {
+      return res.json(200, {
+        message: "Sign Up Successful, here is your token, plz keep it safe",
+
+        data: {
+          //user.JSON() part gets encrypted
+
+          token: jwt.sign(user.toJSON(), "caloriesapp", {
+            expiresIn: "100000",
+          }),
+          user,
+        },
+        success: true,
+      });
+    }
+    if (!user) {
+      let hashedPassword = await bcrypt.hash(req.body.password, 12);
+      console.log("c1");
+      req.body.password = hashedPassword;
+      let user = User.create(req.body, function (err, user) {
+        if (err) {
+          return res.json(500, {
+            message: "Internal Server Error",
+          });
+        }
+        console.log("c2");
+
+        // let userr = User.findOne({ email: req.body.email });
+
         return res.json(200, {
           message: "Sign Up Successful, here is your token, plz keep it safe",
 
@@ -94,38 +131,12 @@ module.exports.signUp = async function (req, res) {
           },
           success: true,
         });
-      }
-
-      if (!user) {
-        let user = User.create(req.body, function (err, user) {
-          if (err) {
-            return res.json(500, {
-              message: "Internal Server Error",
-            });
-          }
-
-          // let userr = User.findOne({ email: req.body.email });
-
-          return res.json(200, {
-            message: "Sign Up Successful, here is your token, plz keep it safe",
-
-            data: {
-              //user.JSON() part gets encrypted
-
-              token: jwt.sign(user.toJSON(), "caloriesapp", {
-                expiresIn: "100000",
-              }),
-              user,
-            },
-            success: true,
-          });
-        });
-      } else {
-        return res.json(500, {
-          message: "Internal Server Error",
-        });
-      }
-    });
+      });
+    } else {
+      return res.json(500, {
+        message: "Internal Server Error",
+      });
+    }
   } catch (err) {
     console.log(err);
 
@@ -177,7 +188,7 @@ module.exports.editItem = async function (req, res) {
   
     try {
       let inventory = await Inventory.findOne({itemname:req.body.itemname});
-      console.log(inventory);
+      console.log('inventory');
       inventory.quantity = req.body.quantity;
       
       
@@ -324,7 +335,7 @@ module.exports.createMenu = async function (req, res) {
 module.exports.index = async function (req, res) {
   let jobs = await Inventory.find({}).sort("-createdAt");
   console.log("jobs");
-  console.log(jobs);
+  // console.log(jobs);
   //Whenever we want to send back JSON data
 
   return res.json(200, {
