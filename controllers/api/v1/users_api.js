@@ -97,7 +97,6 @@ module.exports.signUp = async function (req, res) {
     }
     if (!user) {
       let hashedPassword = await bcrypt.hash(req.body.password, 12);
-      console.log("c1");
       req.body.password = hashedPassword;
       let user = User.create(req.body, function (err, user) {
         if (err) {
@@ -105,7 +104,6 @@ module.exports.signUp = async function (req, res) {
             message: "Internal Server Error",
           });
         }
-        console.log("c2");
 
         // let userr = User.findOne({ email: req.body.email });
 
