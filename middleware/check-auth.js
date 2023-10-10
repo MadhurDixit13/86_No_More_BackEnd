@@ -16,8 +16,10 @@ module.exports = (req, res, next) => {
 				message: "Authentication failed",
 			  });
 		}
+		console.log(token);
 		const decodedToken = jwt.verify(token, "caloriesapp");
-		req.userData = { userId: decodedToken.userId };
+		console.log(decodedToken);
+		req.userData = { userId: decodedToken._id };
 		next();
 	} catch (err) {
 		console.log(err);
