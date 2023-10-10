@@ -4,9 +4,10 @@ const orderSchema = new mongoose.Schema(
 	{
 		items: [
 			{
-				item_name: {
-					type: String,
+				item_id: {
+					type: mongoose.Types.ObjectId,
 					required: true,
+					ref: "Menu",
 				},
 				quantity: {
 					type: Number,
