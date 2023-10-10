@@ -8,8 +8,6 @@ const Application = require('../../../models/application');
 const Inventory = require("../../../models/inventory");
 const Menu = require("../../../models/menu");
 
-
-
 module.exports.createSession = async function (req, res) {
   
   try {
