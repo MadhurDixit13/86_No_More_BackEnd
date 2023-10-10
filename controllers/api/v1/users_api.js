@@ -259,10 +259,9 @@ module.exports.getHistory = async function (req, res) {
 
 module.exports.createJob = async function (req, res) {
   // let inventory = await Inventory.findOne({ itemname: req.body.itemname });
-  
+  console.log(req.userData);
   try {
     let job = await Inventory.create({
-      restname: req.body.restname,
       itemname: req.body.itemname,
       restid:req.userData.userId,
       quantity:req.body.quantity,
@@ -289,22 +288,17 @@ module.exports.createJob = async function (req, res) {
 };
 
 module.exports.createMenu = async function (req, res) {
-  // let inventory = await Inventory.findOne({ itemname: req.body.itemname });
-  
   try {
     let menu = await Menu.create({
-      restname: req.body.restname,
       menuname: req.body.menuname,
       restid:req.userData.userId,
-      quantity:req.body.quantity,
       costmenu:req.body.costmenu,
-      
+      ingredients: req.body.ingredients,
     });
 
     return res.json(200, {
       data: {
         menu: menu,
-        //token: jwt.sign(user.toJSON(), env.jwt_secret, { expiresIn: "100000" })
       },
       message: "Menu Created!!",
       success: true,
