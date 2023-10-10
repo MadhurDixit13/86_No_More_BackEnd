@@ -20,6 +20,7 @@ const passportLocal = require('./config/passport-local-strategy');
 const passportJWT = require('./config/passport-jwt-strategy');
 
 app.use(cors());
+app.use(express.json());
 
 app.use(express.urlencoded());
 

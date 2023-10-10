@@ -1,20 +1,28 @@
 const jwt = require("jsonwebtoken");
-const HttpError = require("../models/http-error");
 
 module.exports = (req, res, next) => {
 	if (req.method === "OPTIONS") {
 		return next();
 	}
 	try {
+		if (!req.headers.authorization) {
+			return res.json(403, {
+				message: "Token not found",
+			  });
+		}
 		const token = req.headers.authorization.split(" ")[1]; //Authorization: 'Bearer TOKEN'
 		if (!token) {
-			throw new Error("Authentication failed!");
+			return res.json(403, {
+				message: "Authentication failed",
+			  });
 		}
-		const decodedToken = jwt.verify(token, process.env.JWT_KEY);
+		const decodedToken = jwt.verify(token, "caloriesapp");
 		req.userData = { userId: decodedToken.userId };
 		next();
 	} catch (err) {
-		const error = new HttpError("Authentication failed!", 403);
-		return next(error);
+		console.log(err);
+		return res.json(500, {
+			message: "Internal Server Error",
+		  });
 	}
 };
