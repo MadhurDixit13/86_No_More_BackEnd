@@ -14,13 +14,11 @@ module.exports.createSession = async function (req, res) {
   
   try {
     let user = await User.findOne({ email: req.body.email });
-
     if (!user) {
       return res.json(422, {
         message: "Invalid username or password",
       });
     }
-
     let isValidPassword = await bcrypt.compare(req.body.password, user.password);
     if (!isValidPassword){
       return res.json(422, {
@@ -31,7 +29,7 @@ module.exports.createSession = async function (req, res) {
     return res.json(200, {
       message: "Sign In Successful, here is your token, please keep it safe",
       data: {
-        token: jwt.sign(user.toJSON(), "caloriesapp", { expiresIn: "100000" }),
+        token: jwt.sign(user.toJSON(), "caloriesapp", { expiresIn: "10 days" }),
         user: user,
       },
       success: true,
@@ -84,7 +82,7 @@ module.exports.signUp = async function (req, res) {
   try {
     if (req.body.password != req.body.confirm_password) {
       return res.json(422, {
-        message: "Passwords donot match",
+        message: "Passwords do not match",
       });
     }
 
@@ -98,6 +96,7 @@ module.exports.signUp = async function (req, res) {
     if (!user) {
       let hashedPassword = await bcrypt.hash(req.body.password, 12);
       req.body.password = hashedPassword;
+      console.log(req.body);
       let user = User.create(req.body, function (err, user) {
         if (err) {
           return res.json(500, {
@@ -114,7 +113,7 @@ module.exports.signUp = async function (req, res) {
             //user.JSON() part gets encrypted
 
             token: jwt.sign(user.toJSON(), "caloriesapp", {
-              expiresIn: "100000",
+              expiresIn: "10 days",
             }),
             user,
           },
@@ -267,7 +266,7 @@ module.exports.createJob = async function (req, res) {
     let job = await Inventory.create({
       restname: req.body.restname,
       itemname: req.body.itemname,
-      restid:req.body.id,
+      restid:req.userData.userId,
       quantity:req.body.quantity,
       costperitem:req.body.costperitem,
       datebought:req.body.datebought,
@@ -298,7 +297,7 @@ module.exports.createMenu = async function (req, res) {
     let menu = await Menu.create({
       restname: req.body.restname,
       menuname: req.body.menuname,
-      restid:req.body.id,
+      restid:req.userData.userId,
       quantity:req.body.quantity,
       costmenu:req.body.costmenu,
       
@@ -322,9 +321,8 @@ module.exports.createMenu = async function (req, res) {
 };
 
 module.exports.index = async function (req, res) {
-  let jobs = await Inventory.find({}).sort("-createdAt");
+  let jobs = await Inventory.find({"restid": req.userData.userId}).sort("-createdAt");
   console.log("jobs");
-  // console.log(jobs);
   //Whenever we want to send back JSON data
 
   return res.json(200, {
@@ -347,7 +345,7 @@ module.exports.fetchApplication = async function (req, res) {
 };
 
 module.exports.fetchMenu = async function (req, res) {
-  let menu = await Menu.find({}).sort("-createdAt");
+  let menu = await Menu.find({"restid": req.userData.userId}).sort("-createdAt");
 
   //Whenever we want to send back JSON data
   console.log("fetchMenu");
