@@ -163,25 +163,17 @@ module.exports.editProfile = async function (req, res) {
 
 module.exports.editItem = async function (req, res) {
 	try {
-		let inventory = await Inventory.findOne({ itemname: req.body.itemname });
+		let inventory = await Inventory.findById(req.body.inventory_id);
 		console.log("inventory");
-		inventory.quantity = req.body.quantity;
+		inventory.quantity = inventory.quantity + req.body.add_quantity;
+		inventory.datebought = req.body.datebought;
+		inventory.dateexpired = req.body.dateexpired;
+		inventory.costperitem = req.body.costperitem;
 
 		inventory.save();
 
-		let inventories = await Inventory.find({}).sort("-createdAt");
-
 		return res.json(200, {
-			message: "User is updated Successfully",
-
-			data: {
-				//user.JSON() part gets encrypted
-
-				// token: jwt.sign(user.toJSON(), env.jwt_secret, {
-				//   expiresIn: "100000",
-				// }),
-				inventories,
-			},
+			message: "Inventory is updated Successfully",
 			success: true,
 		});
 	} catch (err) {
