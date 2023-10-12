@@ -294,6 +294,11 @@ module.exports.createMenu = async function (req, res) {
 			ingredients: req.body.ingredients,
 		});
 
+		await menu.populate({
+			path: 'ingredients.inventory_id',
+			select: 'itemname',
+		})
+
 		return res.json(200, {
 			data: {
 				menu: menu,
