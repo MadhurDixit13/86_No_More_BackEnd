@@ -7,9 +7,10 @@ module.exports.getOrders = async (req, res, next) => {
 	const orders = await Order.find({ restid: req.userData.userId })
 		.sort("-createdAt")
 		.populate({ path: "items", populate: { path: "item_id", model: "Menu" } });
+
 	res
 		.status(200)
-		.json({ data: orders, message: "Fetched Orders Successfully" });
+		.json({ order: orders, message: "Fetched Orders Successfully" });
 };
 
 module.exports.createOrder = async (req, res, next) => {
@@ -40,7 +41,9 @@ module.exports.createOrder = async (req, res, next) => {
 		});
 		await newOrder.save({ session: sess });
 		await sess.commitTransaction();
-		res.status(201).json({ message: "Order placed successfully" });
+		res.status(200).json({ message: "Order placed successfully", data: {
+			order: newOrder,
+		},success: true});
 	} catch (err) {
 		console.log(err);
 		return res

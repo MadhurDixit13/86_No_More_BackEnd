@@ -163,26 +163,21 @@ module.exports.editProfile = async function (req, res) {
 
 module.exports.editItem = async function (req, res) {
 	try {
-		let inventory = await Inventory.findOne({ itemname: req.body.itemname });
+		let inventory = await Inventory.findById(req.body.inventory_id);
 		console.log("inventory");
-		inventory.quantity = req.body.quantity;
+		inventory.quantity = inventory.quantity + Number(req.body.add_quantity);
+		inventory.datebought = req.body.datebought;
+		inventory.dateexpired = req.body.dateexpired;
+		inventory.costperitem = req.body.costperitem;
 
 		inventory.save();
 
 		let inventories = await Inventory.find({}).sort("-createdAt");
 
 		return res.json(200, {
-			message: "User is updated Successfully",
-
-			data: {
-				//user.JSON() part gets encrypted
-
-				// token: jwt.sign(user.toJSON(), env.jwt_secret, {
-				//   expiresIn: "100000",
-				// }),
-				inventories,
-			},
+			message: "Inventory is updated Successfully",
 			success: true,
+			inventories
 		});
 	} catch (err) {
 		console.log(err);
@@ -250,6 +245,13 @@ module.exports.createJob = async function (req, res) {
 	// let inventory = await Inventory.findOne({ itemname: req.body.itemname });
 	console.log(req.userData);
 	try {
+		let inventory = await Inventory.findOne({ itemname: req.body.itemname });
+		if (inventory) {
+			return res.json(401, {
+				message: "This Item is already exists",
+				success: false,
+			});
+		}
 		let job = await Inventory.create({
 			itemname: req.body.itemname,
 			restid: req.userData.userId,
@@ -278,12 +280,24 @@ module.exports.createJob = async function (req, res) {
 
 module.exports.createMenu = async function (req, res) {
 	try {
+		let menuItem = await Menu.findOne({ menuname: req.body.menuname });
+		if (menuItem) {
+			return res.json(401, {
+				message: "This Menu Item already exists",
+				success: false,
+			});
+		}
 		let menu = await Menu.create({
 			menuname: req.body.menuname,
 			restid: req.userData.userId,
 			costmenu: req.body.costmenu,
 			ingredients: req.body.ingredients,
 		});
+
+		await menu.populate({
+			path: 'ingredients.inventory_id',
+			select: 'itemname',
+		})
 
 		return res.json(200, {
 			data: {
@@ -330,7 +344,10 @@ module.exports.fetchApplication = async function (req, res) {
 module.exports.fetchMenu = async function (req, res) {
 	let menu = await Menu.find({ restid: req.userData.userId }).sort(
 		"-createdAt"
-	);
+	).populate({
+		path: 'ingredients.inventory_id',
+    	select: 'itemname',
+	});
 
 	//Whenever we want to send back JSON data
 	console.log("fetchMenu");
