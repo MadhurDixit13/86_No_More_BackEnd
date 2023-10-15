@@ -6,6 +6,7 @@ const router = express.Router();
 const usersApi = require('../../../controllers/api/v1/users_api');
 const checkAuth = require("../../../middleware/check-auth");
 const orderController = require('../../../controllers/api/v1/order_controller');
+const analyticsController = require('../../../controllers/api/v1/analytics_controller');
 
 router.post('/create-session',usersApi.createSession);
 router.post('/signup', usersApi.signUp);
@@ -29,5 +30,6 @@ router.post('/createmenu',usersApi.createMenu);
 router.get('/fetchmenus',usersApi.fetchMenu);
 router.get('/orders', orderController.getOrders);
 router.post('/order', orderController.createOrder);
+router.get('/analytics', analyticsController.getAnalytics);
 
 module.exports = router;
