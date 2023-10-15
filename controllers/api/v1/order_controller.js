@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const Inventory = require("../../../models/inventory");
 const Menu = require("../../../models/menu");
 const Order = require("../../../models/order");
+const { sendEmail } = require("./email-template");
 
 module.exports.getOrders = async (req, res, next) => {
 	const orders = await Order.find({ restid: req.userData.userId })
@@ -23,6 +24,9 @@ module.exports.createOrder = async (req, res, next) => {
 			const quantity = item.quantity;
 			for (let ingredient of menuItem.ingredients) {
 				const inventory = await Inventory.findById(ingredient.inventory_id);
+				if (inventory.quantity < 10){
+					await sendEmail(req.userData.email, inventory.itemname, inventory.quantity);
+				}
 				if (inventory.quantity < quantity * ingredient.quantity) {
 					return res
 						.status(403)
