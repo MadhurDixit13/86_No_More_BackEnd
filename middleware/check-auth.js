@@ -20,6 +20,7 @@ module.exports = (req, res, next) => {
 		const decodedToken = jwt.verify(token, "caloriesapp");
 		console.log(decodedToken);
 		req.userData = { userId: decodedToken._id };
+		req.userData.email = decodedToken.email;
 		next();
 	} catch (err) {
 		console.log(err);
