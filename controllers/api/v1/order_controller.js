@@ -24,9 +24,7 @@ module.exports.createOrder = async (req, res, next) => {
 			const quantity = item.quantity;
 			for (let ingredient of menuItem.ingredients) {
 				const inventory = await Inventory.findById(ingredient.inventory_id);
-				if (inventory.quantity < 10){
-					await sendEmail(req.userData.email, inventory.itemname, inventory.quantity);
-				}
+
 				if (inventory.quantity < quantity * ingredient.quantity) {
 					return res
 						.status(403)
@@ -34,6 +32,13 @@ module.exports.createOrder = async (req, res, next) => {
 				} else {
 					inventory.quantity =
 						inventory.quantity - quantity * ingredient.quantity;
+					if (inventory.quantity < 10) {
+						await sendEmail(
+							req.userData.email,
+							inventory.itemname,
+							inventory.quantity
+						);
+					}
 					await inventory.save({ session: sess });
 				}
 			}
@@ -45,9 +50,13 @@ module.exports.createOrder = async (req, res, next) => {
 		});
 		await newOrder.save({ session: sess });
 		await sess.commitTransaction();
-		res.status(200).json({ message: "Order placed successfully", data: {
-			order: newOrder,
-		},success: true});
+		res.status(200).json({
+			message: "Order placed successfully",
+			data: {
+				order: newOrder,
+			},
+			success: true,
+		});
 	} catch (err) {
 		console.log(err);
 		return res
