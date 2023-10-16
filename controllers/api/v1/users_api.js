@@ -177,7 +177,7 @@ module.exports.editItem = async function (req, res) {
 		return res.json(200, {
 			message: "Inventory is updated Successfully",
 			success: true,
-			inventories
+			inventories,
 		});
 	} catch (err) {
 		console.log(err);
@@ -245,10 +245,13 @@ module.exports.createJob = async function (req, res) {
 	// let inventory = await Inventory.findOne({ itemname: req.body.itemname });
 	console.log(req.userData);
 	try {
-		let inventory = await Inventory.findOne({ itemname: req.body.itemname });
+		let inventory = await Inventory.findOne({
+			restid: req.userData.userId,
+			itemname: req.body.itemname,
+		});
 		if (inventory) {
 			return res.json(401, {
-				message: "This Item is already exists",
+				message: "This Item already exists",
 				success: false,
 			});
 		}
@@ -280,7 +283,10 @@ module.exports.createJob = async function (req, res) {
 
 module.exports.createMenu = async function (req, res) {
 	try {
-		let menuItem = await Menu.findOne({ menuname: req.body.menuname });
+		let menuItem = await Menu.findOne({
+			restid: req.userData.userId,
+			menuname: req.body.menuname,
+		});
 		if (menuItem) {
 			return res.json(401, {
 				message: "This Menu Item already exists",
@@ -295,9 +301,9 @@ module.exports.createMenu = async function (req, res) {
 		});
 
 		await menu.populate({
-			path: 'ingredients.inventory_id',
-			select: 'itemname',
-		})
+			path: "ingredients.inventory_id",
+			select: "itemname",
+		});
 
 		return res.json(200, {
 			data: {
@@ -342,12 +348,12 @@ module.exports.fetchApplication = async function (req, res) {
 };
 
 module.exports.fetchMenu = async function (req, res) {
-	let menu = await Menu.find({ restid: req.userData.userId }).sort(
-		"-createdAt"
-	).populate({
-		path: 'ingredients.inventory_id',
-    	select: 'itemname',
-	});
+	let menu = await Menu.find({ restid: req.userData.userId })
+		.sort("-createdAt")
+		.populate({
+			path: "ingredients.inventory_id",
+			select: "itemname",
+		});
 
 	//Whenever we want to send back JSON data
 	console.log("fetchMenu");
