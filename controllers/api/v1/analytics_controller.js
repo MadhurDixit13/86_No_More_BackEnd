@@ -22,26 +22,27 @@ module.exports.getAnalytics = async (req, res, next) => {
 			},
 		},
 	});
-	const orderAnalytics = {};
-	const inventoryAnalytics = {};
+	const orderAnalytics = [];
+	const inventoryAnalytics = [];
 	for (let order of orders) {
 		const idx = Math.floor(
 			(order.createdAt - startDate) / (1000 * 60 * 60 * 24)
 		);
 		for (let item of order.items) {
-			if (!(item.item_id.menuname in orderAnalytics)) {
-				orderAnalytics[item.item_id.menuname] = [0, 0, 0, 0, 0, 0, 0];
+			let index = orderAnalytics.findIndex((order)=>order.menuName === item.item_id.menuname)
+			if (index===-1) {
+				orderAnalytics.push({menuName:item.item_id.menuname,data:[0, 0, 0, 0, 0, 0, 0]});
+				index = orderAnalytics.length-1
 			}
-			orderAnalytics[item.item_id.menuname][idx] += item.quantity;
+			orderAnalytics[index].data[idx] += item.quantity;
 
 			for (let ingredient of item.item_id.ingredients) {
-				if (!(ingredient.inventory_id.itemname in inventoryAnalytics)) {
-					inventoryAnalytics[ingredient.inventory_id.itemname] = [
-						0, 0, 0, 0, 0, 0, 0,
-					];
+				let index = inventoryAnalytics.findIndex((order)=>order.itemName === ingredient.inventory_id.itemname)
+				if (index===-1) {
+					inventoryAnalytics.push({itemName:ingredient.inventory_id.itemname,data:[0, 0, 0, 0, 0, 0, 0]});
+					index = inventoryAnalytics.length-1
 				}
-				inventoryAnalytics[ingredient.inventory_id.itemname][idx] +=
-					ingredient.quantity;
+				inventoryAnalytics[index].data[idx] += ingredient.quantity;			
 			}
 		}
 	}
