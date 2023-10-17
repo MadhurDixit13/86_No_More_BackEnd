@@ -36,22 +36,6 @@ describe('Tasks API', () => {
 
 
     describe("Inventory items creation API:" , () => {
-
-        // before((done) => {
-        //     chai.request('http://localhost:8000')
-        //         .post("/api/v1/users/create-session")
-        //         .send({
-        //             email:'shyamalgandhi47.sg@gmail.com',
-        //             password:'123'
-        //         })
-        //         .end((err,response) =>{
-        //             console.log('-------',response.body.success);
-        //             authToken = response.body.data.token;
-        //             console.log(authToken);
-
-        //         done();
-        //         });
-        // });
     
         it("IT SHOULD RETURN THE JOB", (done) => {
     
@@ -141,14 +125,9 @@ describe('Tasks API', () => {
                 .send(body)
                 .end((err,response) => {
                     response.body.should.be.a('object');
-                    console.log('------',response.body)
                     
                     expect(response).to.not.have.status(500);
-                    // if(response.body.success == true){
-                    //     expect(response).to.have.status(200);
-                    // }else{
-                    //     expect(response).to.have.status(401);
-                    // }
+ 
                     
     
                 done();
