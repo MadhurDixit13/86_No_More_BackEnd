@@ -35,3 +35,12 @@ npm run coverage
 
 
 These tests serve as a critical component in ensuring the robustness and reliability of our backend services, guaranteeing that they meet the specified requirements and perform as expected.
+
+
+## Here are the test cases that we have implemented
+
+- [User authentication test](https://github.com/drs1951/86_Backend/blob/shyamal31-patch-1/docs/test/auth_test.md)
+- [Inventory test](https://github.com/drs1951/86_Backend/blob/shyamal31-patch-1/docs/test/inventory_test.md)
+- [Menu test](https://github.com/drs1951/86_Backend/blob/shyamal31-patch-1/docs/test/menu_test.md)
+- [Order test](https://github.com/drs1951/86_Backend/blob/shyamal31-patch-1/docs/test/order_test.md)
+- [Analytics test](https://github.com/drs1951/86_Backend/blob/shyamal31-patch-1/docs/test/analytics_test.md)
