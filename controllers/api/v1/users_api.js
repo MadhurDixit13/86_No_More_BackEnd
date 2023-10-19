@@ -172,7 +172,7 @@ module.exports.editItem = async function (req, res) {
 
 		inventory.save();
 
-		let inventories = await Inventory.find({}).sort("-createdAt");
+		let inventories = await Inventory.find({restid: req.userData.userId}).sort("-createdAt");
 
 		return res.json(200, {
 			message: "Inventory is updated Successfully",
