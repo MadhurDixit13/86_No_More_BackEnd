@@ -1,6 +1,12 @@
 # Test Cases for Backend APIs
 
-In this project, we have employed the Mocha and Chai Framework to comprehensively test the functionality of our backend APIs. Additionally, we have integrated nyc coverage to provide a clear overview of the test coverage, enhancing the understanding of each test's purpose and the extent of code coverage.
+In this project, we have employed the Mocha and Chai Framework to comprehensively test the functionality of our backend APIs. 
+
+Additionally, we have integrated nyc coverage to provide a clear overview of the test coverage, enhancing the understanding of each test's purpose and the extent of code coverage.
+
+
+![image](https://github.com/drs1951/86_Backend/assets/57554284/c4d308d1-228c-45f4-b08d-9cd2ec770a97)
+
 
 These tests serve as a critical component in ensuring the robustness and reliability of our backend services, guaranteeing that they meet the specified requirements and perform as expected.
 
