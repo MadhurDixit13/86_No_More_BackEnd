@@ -2,7 +2,7 @@
 
 ## Get Analytics
 
-Used to get the analsis of menu itme ordered and usage of inventory items. 
+Used to get the analysis of menu items ordered and usage of inventory items. Here, the number of items shown are sold/used in the past 7 days.
 
 **URL** : `/api/v1/users/analytics`
 
