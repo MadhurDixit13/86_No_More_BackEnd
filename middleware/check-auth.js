@@ -17,7 +17,7 @@ module.exports = (req, res, next) => {
 			  });
 		}
 		console.log(token);
-		const decodedToken = jwt.verify(token, "caloriesapp");
+		const decodedToken = jwt.verify(token, process.env.JWT_KEY);
 		console.log(decodedToken);
 		req.userData = { userId: decodedToken._id };
 		req.userData.email = decodedToken.email;

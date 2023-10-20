@@ -29,7 +29,7 @@ module.exports.createSession = async function (req, res) {
 		return res.json(200, {
 			message: "Sign In Successful, here is your token, please keep it safe",
 			data: {
-				token: jwt.sign(user.toJSON(), "caloriesapp", { expiresIn: "10 days" }),
+				token: jwt.sign(user.toJSON(), process.env.JWT_KEY, { expiresIn: "10 days" }),
 				user: user,
 			},
 			success: true,
@@ -102,7 +102,7 @@ module.exports.signUp = async function (req, res) {
 					data: {
 						//user.JSON() part gets encrypted
 
-						token: jwt.sign(user.toJSON(), "caloriesapp", {
+						token: jwt.sign(user.toJSON(), process.env.JWT_KEY, {
 							expiresIn: "10 days",
 						}),
 						user,
