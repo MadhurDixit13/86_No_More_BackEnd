@@ -1,4 +1,5 @@
 const User = require("../models/user");
+const speakeasy = require('speakeasy');
 
 module.exports.profile = function(req,res){
     return res.render('user_profile', {
@@ -31,6 +32,9 @@ module.exports.signIn = function(req,res){
     })
 }
 
+module.exports.otp = function(req,res){
+    return res.redirect('/users/otp');
+}
 
 module.exports.create = function(req,res){
 

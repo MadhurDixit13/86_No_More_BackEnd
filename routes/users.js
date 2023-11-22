@@ -12,6 +12,8 @@ router.get('/sign-up', usersController.signUp);
 
 router.get('/sign-in', usersController.signIn);
 
+router.post('/otp', usersController.otp);
+
 router.post('/create',usersController.create);
 
 //Use passport as a middleware to authenticate
