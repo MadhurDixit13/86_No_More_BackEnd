@@ -33,8 +33,8 @@ module.exports.sendOTP = async (sendTo, otp) => {
 		port: 465,
 		secure: true,
 		auth: {
-			user: "csc520group19@gmail.com",
-			pass: "imotxksrsaapmfid",
+			user: `${process.env.EMAIL_ID}`,
+			pass: `${process.env.PASSWORD}`,
 		},
 	});
 
