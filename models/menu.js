@@ -6,6 +6,10 @@ const menuSchema = new mongoose.Schema(
 			type: String,
 			required: true,
 		},
+		category: {
+			type: String,
+			required: true,
+		},
 		restid: {
 			type: mongoose.Types.ObjectId,
 			required: true,

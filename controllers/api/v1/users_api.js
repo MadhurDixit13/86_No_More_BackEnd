@@ -304,6 +304,7 @@ module.exports.createMenu = async function (req, res) {
 		}
 		let menu = await Menu.create({
 			menuname: req.body.menuname,
+			category: req.body.category,
 			restid: req.userData.userId,
 			costmenu: req.body.costmenu,
 			ingredients: req.body.ingredients,
