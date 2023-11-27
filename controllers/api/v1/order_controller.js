@@ -19,6 +19,7 @@ module.exports.createOrder = async (req, res, next) => {
 	try {
 		const sess = await mongoose.startSession();
 		sess.startTransaction();
+		const Ordercost = req.body.Ordercost;
 		for (let item of req.body.items) {
 			const menuItem = await Menu.findById(item.id);
 			const quantity = item.quantity;
@@ -46,6 +47,7 @@ module.exports.createOrder = async (req, res, next) => {
 		}
 		const newOrder = new Order({
 			items,
+			Ordercost,
 			restid: req.userData.userId,
 		});
 		await newOrder.save({ session: sess });
