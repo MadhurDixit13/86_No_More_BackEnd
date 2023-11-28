@@ -14,6 +14,11 @@ const orderSchema = new mongoose.Schema(
 				},
 			},
 		],
+		Ordercost: {
+			type: Number,
+			required: true,
+			ref: "Cost",
+		},
 		restid: {
 			type: mongoose.Types.ObjectId,
 			required: true,

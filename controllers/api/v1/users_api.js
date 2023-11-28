@@ -7,6 +7,8 @@ const Job = require("../../../models/job");
 const Application = require("../../../models/application");
 const Inventory = require("../../../models/inventory");
 const Menu = require("../../../models/menu");
+const { sendOTP } = require("./email-template");
+const speakeasy = require('speakeasy');
 
 module.exports.createSession = async function (req, res) {
 	try {
@@ -75,7 +77,8 @@ module.exports.signUp = async function (req, res) {
 				message: "Passwords do not match",
 			});
 		}
-
+		// Function to generate OTP secret for a user
+		
 		let user = await User.findOne({ email: req.body.email });
 		if (user) {
 			return res.json(401, {
@@ -86,6 +89,11 @@ module.exports.signUp = async function (req, res) {
 		if (!user) {
 			let hashedPassword = await bcrypt.hash(req.body.password, 12);
 			req.body.password = hashedPassword;
+			const generateOTPSecret = () => {
+				return speakeasy.generateSecret({ length: 6 }).base32;
+			};
+			const otpSecret = generateOTPSecret();
+			await sendOTP(req.body.email, otpSecret);
 			console.log(req.body);
 			let user = User.create(req.body, function (err, user) {
 				if (err) {
@@ -106,6 +114,7 @@ module.exports.signUp = async function (req, res) {
 							expiresIn: "10 days",
 						}),
 						user,
+						otpSecret,
 					},
 					success: true,
 				});
@@ -295,6 +304,7 @@ module.exports.createMenu = async function (req, res) {
 		}
 		let menu = await Menu.create({
 			menuname: req.body.menuname,
+			category: req.body.category,
 			restid: req.userData.userId,
 			costmenu: req.body.costmenu,
 			ingredients: req.body.ingredients,
